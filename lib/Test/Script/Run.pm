@@ -91,7 +91,7 @@ sub _run_ok {
     };
 }
 
-# _updir
+# _updir( $path )
 #
 # Strips off the filename in the given path and returns the absolute
 # path of the remaining directory.
@@ -103,6 +103,9 @@ sub _updir {
 }
 
 our $RUNCNT;
+
+# _get_perl_cmd( $script )
+# find the $script path
 
 sub _get_perl_cmd {
     my $script = shift;
@@ -158,22 +161,19 @@ sub is_script_output {
     _check_cmp_closure_output( $script, $msg, $args, $exp_stdout, $stdout_err );
 }
 
-=head2 _mk_cmp_closure($expected, $error)
-
-$expected is a reference to an array of expected output lines, and
-$error is an array reference for storing error messages.
-
-Returns a subroutine that takes a line of output and compares it
-to the next line in $expected. You can, for example, pass this
-subroutine to L<IPC::Run3>::run3 and it will compare the output
-of the script being run to the expected output. After the script
-is done running, errors will be in $error.
-
-If a line in $expected is a Regexp reference (made with e.g.
-qr/foo/), the subroutine will check for a regexp match rather
-than string equality.
-
-=cut
+# =head2 _mk_cmp_closure($expected, $error)
+# $expected is a reference to an array of expected output lines, and
+# $error is an array reference for storing error messages.
+# 
+# Returns a subroutine that takes a line of output and compares it
+# to the next line in $expected. You can, for example, pass this
+# subroutine to L<IPC::Run3>::run3 and it will compare the output
+# of the script being run to the expected output. After the script
+# is done running, errors will be in $error.
+# 
+# If a line in $expected is a Regexp reference (made with e.g.
+# qr/foo/), the subroutine will check for a regexp match rather
+# than string equality.
 
 sub _mk_cmp_closure {
     my ( $exp, $err ) = @_;
