@@ -12,8 +12,13 @@ our $VERSION = '0.01';
 use base 'Exporter';
 our @EXPORT =
   qw/run_ok run_not_ok run_script run_output_matches run_output_matches_unordered/;
-our @EXPORT_OK = qw/is_script_output/;
+our @EXPORT_OK = qw/is_script_output last_script_stdout last_script_stderr
+  last_script_exit_code/;
 our %EXPORT_TAGS = ( all => [ @EXPORT, @EXPORT_OK ] );
+my (
+    $last_script_stdout,        $last_script_stderr,
+    $last_script_exit_code,
+);
 
 =head2 run_script($script, $args, $stdout, $stderr)
 
@@ -44,7 +49,18 @@ sub run_script {
     my @cmd = _get_perl_cmd($script);
 
     my $ret = run3 [ @cmd, @$args ], undef, $stdout, $stderr;
-    return $return_stdouterr ? ( $ret, $$stdout, $$stderr ) : $ret;
+    $last_script_exit_code = $? >> 8;
+    if ( ref $stdout eq 'SCALAR' ) {
+        $last_script_stdout = $$stdout;
+    }
+
+    if ( ref $stderr eq 'SCALAR' ) {
+        $last_script_stderr = $$stderr;
+    }
+
+    return $return_stdouterr
+      ? ( $ret, $last_script_stdout, $last_script_stderr )
+      : $ret;
 }
 
 =head2 run_ok($script, $args, $msg)
@@ -154,8 +170,8 @@ sub is_script_output {
 
     my $ret = run_script(
         $script, $args,
-        _mk_cmp_closure( $exp_stdout, $stdout_err ),    # stdout
-        _mk_cmp_closure( $exp_stderr, $stdout_err ),    # stderr
+        _mk_cmp_closure( 'stdout', $exp_stdout, $stdout_err ),    # stdout
+        _mk_cmp_closure( 'stderr', $exp_stderr, $stdout_err ),    # stderr
     );
 
     _check_cmp_closure_output( $script, $msg, $args, $exp_stdout, $stdout_err );
@@ -176,13 +192,34 @@ sub is_script_output {
 # than string equality.
 
 sub _mk_cmp_closure {
-    my ( $exp, $err ) = @_;
-    my $line = 0;
+    my ( $type, $exp, $err ) = @_;
 
+    if ( $type eq 'stderr' ) {
+        $last_script_stderr = '';
+        my $line = 0;
+        return sub {
+            my $output = shift;
+            ++$line;
+            $last_script_stderr .= $output;
+            __mk_cmp_closure()->( $exp, $err, $line, $output );
+          }
+    }
+    else {
+        $last_script_stdout = '';
+        my $line = 0;
+        return sub {
+            my $output = shift;
+            ++$line;
+            $last_script_stdout .= $output;
+            __mk_cmp_closure()->( $exp, $err, $line, $output );
+          }
+    }
+}
+
+sub __mk_cmp_closure {
     sub {
-        my $output = shift;
+        my ( $exp, $err, $line, $output ) = @_;
         chomp $output;
-        ++$line;
         unless (@$exp) {
             push @$err, "$line: got $output";
             return;
@@ -309,6 +346,31 @@ sub run_output_matches_unordered {
         diag( "Errors: " . join( "\n", @$errors ) );
     }
 }
+
+=head2 last_script_stdout
+
+return last script's stdout
+
+=cut
+
+sub last_script_stdout        { $last_script_stdout }
+
+=head2 last_script_stderr
+
+return last script's stderr
+
+=cut
+
+sub last_script_stderr        { $last_script_stderr }
+
+=head2 last_script_exit_code
+
+return last script's exit code
+
+=cut
+
+sub last_script_exit_code     { $last_script_exit_code }
+
 
 1;
 
