@@ -1,23 +1,46 @@
 use strict;
 use warnings;
 
-use Test::More tests => 21;
+use Test::More tests => 33;
 use Test::Script::Run ':all';
 use File::Spec;
 
+run_not_ok( 'not_exist.pl', 'run not exist script');
+ok( last_script_exit_code,     'last exit code is not 0' );
+
 run_ok( 'test.pl', 'run test.pl' );
+is( last_script_stdout, "out line 1\nout line 2", 'last stdout' );
+is( last_script_stderr, "err line 1\nerr line 2", 'last stderr' );
+is( last_script_exit_code, 0, 'last exit code' );
+
+is_script_output(
+    'test.pl', ['out', 'err'],
+    [ 'out' ],
+    [ 'err' ],
+    'is_script_output'
+);
+
+is( last_script_stdout, "out", 'last stdout' );
+is( last_script_stderr, "err", 'last stderr' );
+is( last_script_exit_code, 0, 'last exit code' );
+
 is_script_output(
     'test.pl', [],
     [ 'out line 1', 'out line 2' ],
     [ 'err line 1', 'err line 2' ],
     'is_script_output'
 );
+is( last_script_stdout, "out line 1\nout line 2", 'last stdout' );
+is( last_script_stderr, "err line 1\nerr line 2", 'last stderr' );
+is( last_script_exit_code, 0, 'last exit code' );
+
 run_output_matches(
     'test.pl', [],
     [ 'out line 1', 'out line 2' ],
     [ 'err line 1', 'err line 2' ],
     'run_output_matches'
 );
+
 run_output_matches_unordered(
     'test.pl', [],
     [ 'out line 2', 'out line 1' ],
