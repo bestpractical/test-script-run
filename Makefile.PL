@@ -10,6 +10,7 @@ requires 'IPC::Run3';
 requires 'Test::Exception';
 
 auto_install;
+recursive_author_tests('xt/');
 
 WriteAll;
 
