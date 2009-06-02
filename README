@@ -1,4 +1,4 @@
-Test-Script-Run version 0.01
+Test-Script-Run
 
 This module exports some subs to help test and run your scripts in your 
 dist's bin/ directory, if the script path is not absolute.

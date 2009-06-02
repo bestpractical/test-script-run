@@ -1,5 +1,8 @@
 Revision history for Test-Script-Run
 
+0.02 Tue Jun  2 18:26:50 CST 2009
+    add last_script_stdout, last_script_stderr and last_script_exit_code subs
+
 0.01  Tue Feb 17 16:56:11 2009
        Initial release.
 
