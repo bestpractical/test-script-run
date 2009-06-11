@@ -264,7 +264,7 @@ sub run_output_matches {
     my ( $script, $args, $expected, $stderr, $msg ) = @_;
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     lives_and {
-        local $Test::Builder::Level = $Test::Builder::Level + 3;
+        local $Test::Builder::Level = $Test::Builder::Level + 4;
         is_script_output( $script, $args, $expected, $stderr, $msg );
     };
 }
