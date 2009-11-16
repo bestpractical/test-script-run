@@ -46,7 +46,7 @@ sub run_script {
         ( $stdout, $stderr, $return_stdouterr ) =
           ( \$new_stdout, \$new_stderr, 1 );
     }
-    my @cmd = _get_perl_cmd($script);
+    my @cmd = get_perl_cmd($script);
 
     my $ret = run3 [ @cmd, @$args ], undef, $stdout, $stderr;
     $last_script_exit_code = $? >> 8;
@@ -120,10 +120,14 @@ sub _updir {
 
 our $RUNCNT;
 
-# _get_perl_cmd( $script )
-# find the $script path
 
-sub _get_perl_cmd {
+=head2 get_perl_cmd($script, @ARGS)
+
+Returns a list suitable for passing to C<system>, C<exec>, etc.
+
+=cut
+
+sub get_perl_cmd {
     my $script = shift;
     my $base_dir;
     unless ( File::Spec->file_name_is_absolute($script) ) {
@@ -147,6 +151,9 @@ sub _get_perl_cmd {
     push @cmd, $base_dir ? File::Spec->catdir( $base_dir => $script ) : $script;
     return @cmd;
 }
+
+# back-compat
+*_get_perl_cmd = \&get_perl_cmd;
 
 =head2 is_script_output($scriptname \@args, \@stdout_match, \@stderr_match, $msg)
 
