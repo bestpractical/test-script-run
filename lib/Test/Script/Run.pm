@@ -13,7 +13,7 @@ use base 'Exporter';
 our @EXPORT =
   qw/run_ok run_not_ok run_script run_output_matches run_output_matches_unordered/;
 our @EXPORT_OK = qw/is_script_output last_script_stdout last_script_stderr
-  last_script_exit_code/;
+  last_script_exit_code get_perl_cmd/;
 our %EXPORT_TAGS = ( all => [ @EXPORT, @EXPORT_OK ] );
 my (
     $last_script_stdout,        $last_script_stderr,
