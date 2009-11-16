@@ -136,7 +136,9 @@ sub _get_perl_cmd {
         die "couldn't find bin dir" unless -d $base_dir;
     }
 
-    my @cmd = ( $^X, ( map { "-I$_" } @INC ) );
+    # We grep out references because of INC-hooks like Jifty::ClassLoader
+    my @cmd = ( $^X, ( map { "-I$_" } grep {!ref($_)} @INC ) );
+
     push @cmd, '-MDevel::Cover' if $INC{'Devel/Cover.pm'};
     if ( $INC{'Devel/DProf.pm'} ) {
         push @cmd, '-d:DProf';
