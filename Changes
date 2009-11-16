@@ -1,5 +1,9 @@
 Revision history for Test-Script-Run
 
+0.03
+    Make get_perl_cmd public API
+    Strip references from @INC when generating a perl command
+
 0.02 Tue Jun  2 18:26:50 CST 2009
     add last_script_stdout, last_script_stderr and last_script_exit_code subs
 
