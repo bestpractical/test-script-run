@@ -20,6 +20,39 @@ my (
     $last_script_exit_code,
 );
 
+=head1 NAME
+
+Test::Script::Run - test the script with run
+
+=head1 SYNOPSIS
+
+    use Test::Script::Run;
+    run_ok( 'app_name', [ app's args ], 'you_app runs ok' );
+    my ( $return, $stdout, $stderr ) = run_script( 'app_name', [ app's args ] );
+    run_output_matches(
+        'app_name', [app's args],
+        [ 'out line 1', 'out line 2' ],
+        [ 'err line 1', 'err line 2' ],
+        'run_output_matches'
+    );
+    run_output_matches_unordered(
+        'app_name', [ app's args ],
+        [ 'out line 2', 'out line 1' ],
+        [ 'err line 2', 'err line 1' ],
+        'run_output_matches_unordered'
+    );
+
+=head1 DESCRIPTION
+
+This module exports some subs to help test and run scripts in your dist's 
+bin/ directory, if the script path is not absolute.
+
+Nearly all the essential code is stolen from Prophet::Test, we think subs like
+those should live below C<Test::> namespace, that's why we packed them and
+created this module.
+
+=head1 FUNCTIONS
+
 =head2 run_script($script, $args, $stdout, $stderr)
 
 Runs the script $script as a perl script, setting the @INC to the same as
@@ -385,37 +418,6 @@ sub last_script_exit_code     { $last_script_exit_code }
 
 __END__
 
-=head1 NAME
-
-Test::Script::Run - test the script with run
-
-=head1 SYNOPSIS
-
-    use Test::Script::Run;
-    run_ok( 'app_name', [ app's args ], 'you_app runs ok' );
-    my ( $return, $stdout, $stderr ) = run_script( 'app_name', [ app's args ] );
-    run_output_matches(
-        'app_name', [app's args],
-        [ 'out line 1', 'out line 2' ],
-        [ 'err line 1', 'err line 2' ],
-        'run_output_matches'
-    );
-    run_output_matches_unordered(
-        'app_name', [ app's args ],
-        [ 'out line 2', 'out line 1' ],
-        [ 'err line 2', 'err line 1' ],
-        'run_output_matches_unordered'
-    );
-
-=head1 DESCRIPTION
-
-This module exports some subs to help test and run scripts in your dist's 
-bin/ directory, if the script path is not absolute.
-
-Nearly all the essential code is stolen from Prophet::Test, we think subs like
-those should live below C<Test::> namespace, that's why we packed them and
-created this module.
-
 =head1 DEPENDENCIES
 
 L<Test::More>, L<Test::Exception>, L<IPC::Run3>, L<File::Basename>, L<File::Spec>
@@ -434,4 +436,6 @@ Copyright 2009 Best Practical Solutions.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
+
+=cut
 
