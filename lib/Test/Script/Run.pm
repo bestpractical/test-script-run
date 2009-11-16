@@ -156,21 +156,25 @@ our $RUNCNT;
 
 =head2 get_perl_cmd($script, @ARGS)
 
-Returns a list suitable for passing to C<system>, C<exec>, etc.
+Returns a list suitable for passing to C<system>, C<exec>, etc. If you pass
+C<$script> then we will search upwards for a file F<bin/$script>.
 
 =cut
 
 sub get_perl_cmd {
     my $script = shift;
     my $base_dir;
-    unless ( File::Spec->file_name_is_absolute($script) ) {
-        my ( $tmp, $i ) = ( _updir($0), 0 );
-        while ( !-d File::Spec->catdir( $tmp, 'bin' ) && $i++ < 10 ) {
-            $tmp = _updir($tmp);
-        }
 
-        $base_dir = File::Spec->catdir( $tmp, 'bin' );
-        die "couldn't find bin dir" unless -d $base_dir;
+    if (defined $script) {
+        unless ( File::Spec->file_name_is_absolute($script) ) {
+            my ( $tmp, $i ) = ( _updir($0), 0 );
+            while ( !-d File::Spec->catdir( $tmp, 'bin' ) && $i++ < 10 ) {
+                $tmp = _updir($tmp);
+            }
+
+            $base_dir = File::Spec->catdir( $tmp, 'bin' );
+            die "couldn't find bin dir" unless -d $base_dir;
+        }
     }
 
     # We grep out references because of INC-hooks like Jifty::ClassLoader
@@ -181,7 +185,12 @@ sub get_perl_cmd {
         push @cmd, '-d:DProf';
         $ENV{'PERL_DPROF_OUT_FILE_NAME'} = 'tmon.out.' . $$ . '.' . $RUNCNT++;
     }
-    push @cmd, $base_dir ? File::Spec->catdir( $base_dir => $script ) : $script;
+
+    if (defined $script) {
+        push @cmd, $base_dir ? File::Spec->catdir( $base_dir => $script ) : $script;
+        push @cmd, @_;
+    }
+
     return @cmd;
 }
 
