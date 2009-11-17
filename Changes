@@ -1,6 +1,8 @@
 Revision history for Test-Script-Run
 
-0.03
+0.04
+
+0.03 Tue Nov 17 01:50:40 GMT 2009
     Make get_perl_cmd public API
     Strip references from @INC when generating a perl command
 
