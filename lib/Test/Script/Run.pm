@@ -20,6 +20,8 @@ my (
     $last_script_exit_code,
 );
 
+our @BIN_DIRS = ('bin','sbin','script');
+
 =head1 NAME
 
 Test::Script::Run - test the script with run
@@ -27,6 +29,8 @@ Test::Script::Run - test the script with run
 =head1 SYNOPSIS
 
     use Test::Script::Run;
+    # customized names of bin dirs, default is qw/bin sbin script/;
+    @Test::Script::Run::BIN_DIRS = qw/bin/;
     run_ok( 'app_name', [ app's args ], 'you_app runs ok' );
     my ( $return, $stdout, $stderr ) = run_script( 'app_name', [ app's args ] );
     run_output_matches(
@@ -168,12 +172,20 @@ sub get_perl_cmd {
     if (defined $script) {
         unless ( File::Spec->file_name_is_absolute($script) ) {
             my ( $tmp, $i ) = ( _updir($0), 0 );
-            while ( !-d File::Spec->catdir( $tmp, 'bin' ) && $i++ < 10 ) {
+            my $found;
+LOOP:
+            while ( $i++ < 10 ) {
+                for my $bin ( @BIN_DIRS ) {
+                    if ( -e File::Spec->catfile( $tmp, $bin, $script ) ) {
+                        $script = File::Spec->catfile( $tmp, $bin, $script );
+                        $found = 1;
+                        last LOOP;
+                    }
+                }
                 $tmp = _updir($tmp);
             }
 
-            $base_dir = File::Spec->catdir( $tmp, 'bin' );
-            die "couldn't find bin dir" unless -d $base_dir;
+            warn "couldn't find the script" unless $found;
         }
     }
 
@@ -187,7 +199,7 @@ sub get_perl_cmd {
     }
 
     if (defined $script) {
-        push @cmd, $base_dir ? File::Spec->catdir( $base_dir => $script ) : $script;
+        push @cmd, $script;
         push @cmd, @_;
     }
 

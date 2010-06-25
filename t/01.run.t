@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 33;
+use Test::More tests => 38;
 use Test::Script::Run ':all';
 use File::Spec;
 
@@ -79,3 +79,15 @@ run_ok( $sbin_script, 'sbin script' );
 ok( $return, 'return of sbin_script' );
 is( $stdout, 'test_sbin_script', 'stdout of sbin_script' );
 
+
+run_ok( 'test_script.pl', 'run test_script.pl' );
+is( last_script_stdout, "out line 1\nout line 2", 'last stdout' );
+is( last_script_stderr, "err line 1\nerr line 2", 'last stderr' );
+is( last_script_exit_code, 0, 'last exit code' );
+
+is_script_output(
+    'test.pl', ['out', 'err'],
+    [ 'out' ],
+    [ 'err' ],
+    'is_script_output'
+);
