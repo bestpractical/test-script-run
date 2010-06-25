@@ -1,6 +1,8 @@
 Revision history for Test-Script-Run
 
-0.04
+0.04 Fri Jun 25 12:01:30 CST 2010
+
+    allow customization of bin dir names.
 
 0.03 Tue Nov 17 01:50:40 GMT 2009
     Make get_perl_cmd public API
