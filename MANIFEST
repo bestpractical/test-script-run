@@ -21,6 +21,7 @@ t/01.run.t
 t/bin/test.pl
 t/bin/test_die.pl
 t/sbin/test_sbin.pl
+t/script/test_script.pl
 xt/kwalitee.t
 xt/perlcritic.t
 xt/pod-coverage.t
