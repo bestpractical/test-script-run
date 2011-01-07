@@ -6,7 +6,7 @@ use Test::Script::Run ':all';
 use File::Spec;
 
 run_not_ok( 'not_exist.pl', 'run not exist script');
-ok( last_script_exit_code,     'last exit code is not 0' );
+is( last_script_exit_code, 127, 'last exit code is 127' );
 
 run_ok( 'test.pl', 'run test.pl' );
 is( last_script_stdout, "out line 1\nout line 2", 'last stdout' );
