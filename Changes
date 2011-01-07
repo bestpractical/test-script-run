@@ -1,5 +1,10 @@
 Revision history for Test-Script-Run
 
+0.05 Fri Jan  7 15:17:34 CST 2011
+
+    add '.' to the default bin dirs
+    set exit code to 127 if the script can't be found
+
 0.04 Fri Jun 25 12:01:30 CST 2010
 
     allow customization of bin dir names.
