@@ -8,7 +8,7 @@ use IPC::Run3;
 use File::Basename;
 use File::Spec;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 use base 'Exporter';
 our @EXPORT =
   qw/run_ok run_not_ok run_script run_output_matches run_output_matches_unordered/;
