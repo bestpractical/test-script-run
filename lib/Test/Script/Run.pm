@@ -85,19 +85,26 @@ sub run_script {
     }
     my @cmd = get_perl_cmd($script);
 
-    my $ret = run3 [ @cmd, @$args ], undef, $stdout, $stderr;
-    $last_script_exit_code = $? >> 8;
-    if ( ref $stdout eq 'SCALAR' ) {
-        $last_script_stdout = $$stdout;
-    }
+    if (@cmd) {
+        my $ret = run3 [ @cmd, @$args ], undef, $stdout, $stderr;
+        $last_script_exit_code = $? >> 8;
+        if ( ref $stdout eq 'SCALAR' ) {
+            $last_script_stdout = $$stdout;
+        }
 
-    if ( ref $stderr eq 'SCALAR' ) {
-        $last_script_stderr = $$stderr;
-    }
+        if ( ref $stderr eq 'SCALAR' ) {
+            $last_script_stderr = $$stderr;
+        }
 
-    return $return_stdouterr
-      ? ( $ret, $last_script_stdout, $last_script_stderr )
-      : $ret;
+        return $return_stdouterr
+          ? ( $ret, $last_script_stdout, $last_script_stderr )
+          : $ret;
+    }
+    else {
+        # usually people use 127 to show error about the command can't be found
+        $last_script_exit_code = 127;
+        return;
+    }
 }
 
 =head2 run_ok($script, $args, $msg)
@@ -140,7 +147,7 @@ sub _run_ok {
     lives_and {
         local $Test::Builder::Level = $Test::Builder::Level + 1;
         my ( $ret, $stdout, $stderr ) = run_script( $script, $args );
-        cmp_ok( $? >> 8, $cmp, 0, $msg );
+        cmp_ok( $last_script_exit_code, $cmp, 0, $msg );
     };
 }
 
@@ -161,7 +168,7 @@ our $RUNCNT;
 =head2 get_perl_cmd($script, @ARGS)
 
 Returns a list suitable for passing to C<system>, C<exec>, etc. If you pass
-C<$script> then we will search upwards for a file F<bin/$script>.
+C<$script> then we will search upwards for it in C<@BIN_DIRS>
 
 =cut
 
@@ -170,13 +177,20 @@ sub get_perl_cmd {
     my $base_dir;
 
     if (defined $script) {
-        unless ( File::Spec->file_name_is_absolute($script) ) {
+        my $fail = 0;
+        if ( File::Spec->file_name_is_absolute($script) ) {
+            unless ( -f $script ) {
+                warn "couldn't find the script $script";
+                $fail = 1;
+            }
+        }
+        else {
             my ( $tmp, $i ) = ( _updir($0), 0 );
             my $found;
 LOOP:
             while ( $i++ < 10 ) {
                 for my $bin ( @BIN_DIRS ) {
-                    if ( -e File::Spec->catfile( $tmp, $bin, $script ) ) {
+                    if ( -f File::Spec->catfile( $tmp, $bin, $script ) ) {
                         $script = File::Spec->catfile( $tmp, $bin, $script );
                         $found = 1;
                         last LOOP;
@@ -185,8 +199,12 @@ LOOP:
                 $tmp = _updir($tmp);
             }
 
-            warn "couldn't find the script" unless $found;
+            unless ( $found ) {
+                warn "couldn't find the script $script";
+                $fail = 1;
+            }
         }
+        return if $fail;
     }
 
     # We grep out references because of INC-hooks like Jifty::ClassLoader
