@@ -20,7 +20,7 @@ my (
     $last_script_exit_code,
 );
 
-our @BIN_DIRS = ('bin','sbin','script');
+our @BIN_DIRS = ('bin','sbin','script', '.');
 
 =head1 NAME
 
@@ -29,7 +29,7 @@ Test::Script::Run - test the script with run
 =head1 SYNOPSIS
 
     use Test::Script::Run;
-    # customized names of bin dirs, default is qw/bin sbin script/;
+    # customized names of bin dirs, default is qw/bin sbin script ./;
     @Test::Script::Run::BIN_DIRS = qw/bin/;
     run_ok( 'app_name', [ app's args ], 'you_app runs ok' );
     my ( $return, $stdout, $stderr ) = run_script( 'app_name', [ app's args ] );
