@@ -1,11 +1,14 @@
 ---
-abstract: 'test the script with run'
+abstract: 'test scripts with run'
 author:
   - 'sunnavy <sunnavy@bestpractical.com>'
 build_requires:
+  ExtUtils::MakeMaker: 6.42
   Test::More: 0
+configure_requires:
+  ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: 'Module::Install version 0.79'
+generated_by: 'Module::Install version 1.01'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -15,6 +18,7 @@ no_index:
   directory:
     - inc
     - t
+    - xt
 requires:
   IPC::Run3: 0
   Test::Exception: 0

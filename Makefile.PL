@@ -2,6 +2,7 @@ use inc::Module::Install;
 
 name     'Test-Script-Run';
 all_from 'lib/Test/Script/Run.pm';
+readme_from 'lib/Test/Script/Run.pm';
 author   'sunnavy <sunnavy@bestpractical.com>';
 license  'perl';
 

@@ -24,7 +24,7 @@ our @BIN_DIRS = ('bin','sbin','script', '.');
 
 =head1 NAME
 
-Test::Script::Run - test the script with run
+Test::Script::Run - test scripts with run
 
 =head1 SYNOPSIS
 
@@ -49,7 +49,7 @@ Test::Script::Run - test the script with run
 =head1 DESCRIPTION
 
 This module exports some subs to help test and run scripts in your dist's 
-bin/ directory, if the script path is not absolute.
+script directory( bin, sbin, script, etc ), if the script path is not absolute.
 
 Nearly all the essential code is stolen from Prophet::Test, we think subs like
 those should live below C<Test::> namespace, that's why we packed them and
