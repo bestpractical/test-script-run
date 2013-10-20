@@ -65,7 +65,7 @@ our caller.
 $script is the name of the script to be run (such as 'prophet'). $args is a
 reference to an array of arguments to pass to the script. $stdout and $stderr
 are both optional; if passed in, they will be passed to L<IPC::Run3>'s run3
-subroutine as its $stdout and $stderr args.  Otherwise, this subroutine will
+subroutine as its $stdout and $stderr args.  Otherwise, this subroutine will
 create scalar references to pass to run3 instead (which are treated as strings
 for STDOUT/STDERR to be written to).
 
