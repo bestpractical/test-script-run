@@ -1,5 +1,9 @@
 Revision history for Test-Script-Run
 
+0.08 Sun Oct 20 20:14:17 2013 +0800
+
+    doc updates only(copyright years, changes, etc)
+
 0.07 Sun Oct 20 20:03:50 2013 +0800
 
     quote arguments in test names(requires String::ShellQuote or Win32::ShellQuote)
