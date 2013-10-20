@@ -8,7 +8,7 @@ use IPC::Run3;
 use File::Basename;
 use File::Spec;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 use base 'Exporter';
 our @EXPORT =
   qw/run_ok run_not_ok run_script run_output_matches run_output_matches_unordered/;
@@ -497,7 +497,7 @@ No bugs have been reported.
 
 =head1 AUTHOR
 
-sunnavy  C<< <sunnavy@bestpractical.com> >>
+sunnavy <sunnavy@bestpractical.com>
 
 =head1 LICENCE AND COPYRIGHT
 
