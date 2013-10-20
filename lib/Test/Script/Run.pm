@@ -8,7 +8,7 @@ use IPC::Run3;
 use File::Basename;
 use File::Spec;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 use base 'Exporter';
 our @EXPORT =
   qw/run_ok run_not_ok run_script run_output_matches run_output_matches_unordered/;
@@ -501,7 +501,7 @@ sunnavy <sunnavy@bestpractical.com>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright 2009 Best Practical Solutions.
+Copyright 2009-2013 Best Practical Solutions.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
