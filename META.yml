@@ -28,4 +28,4 @@ requires:
   Test::Exception: 0
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.08
+version: 0.09
