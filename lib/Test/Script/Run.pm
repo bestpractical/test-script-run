@@ -147,7 +147,7 @@ sub _run_ok {
     lives_and {
         local $Test::Builder::Level = $Test::Builder::Level + 1;
         my ( $ret, $stdout, $stderr ) = run_script( $script, $args );
-        cmp_ok( $last_script_exit_code, $cmp, 0, $msg );
+        cmp_ok( $last_script_exit_code, $cmp, 0, _generate_test_name($msg, $script, @$args) );
     };
 }
 
@@ -326,7 +326,7 @@ sub _check_cmp_closure_output {
         push @$stdout_err, "got nothing, expected: $line";
     }
 
-    my $test_name = join( ' ', $msg ? "$msg:" : '', $script, @$args );
+    my $test_name = _generate_test_name( $msg, $script, @$args );
     is( scalar(@$stdout_err), 0, $test_name );
 
     if (@$stdout_err) {
@@ -420,12 +420,42 @@ sub run_output_matches_unordered {
         push @$errors, "got nothing, expected: $exp_line";
     }
 
-    my $test_name = join( ' ', $msg ? "$msg:" : '', $cmd, @$args );
+    my $test_name = _generate_test_name( $msg, $cmd, @$args );
     is( scalar(@$errors), 0, $test_name );
 
     if (@$errors) {
         diag( "Errors: " . join( "\n", @$errors ) );
     }
+}
+
+sub _is_windows {
+    return $^O =~ /MSWin/;
+}
+
+sub _generate_test_name {
+    my $msg = shift;
+    my $script = shift;
+    my @args = @_;
+    my $args;
+    if ( _is_windows() ) {
+        eval { require Win32::ShellQuote };
+        if ($@) {
+            $args = join ' ', @_;
+        }
+        else {
+            $args = Win32::ShellQuote::quote_system_string(@_);
+        }
+    }
+    else {
+        eval { require String::ShellQuote };
+        if ($@) {
+            $args = join ' ', @_;
+        }
+        else {
+            $args = String::ShellQuote::shell_quote(@_);
+        }
+    }
+    return join( ' ', $msg ? "$msg:" : (), $script, defined $args && length $args ? $args : () );
 }
 
 =head2 last_script_stdout

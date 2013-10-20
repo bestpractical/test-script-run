@@ -9,6 +9,7 @@ license  'perl';
 test_requires 'Test::More';
 requires 'IPC::Run3';
 requires 'Test::Exception';
+recommends($^O =~ /MSWin/ ? 'Win32::ShellQuote' : 'String::ShellQuote' );
 
 auto_install;
 recursive_author_tests('xt/');
