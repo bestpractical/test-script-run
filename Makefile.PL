@@ -11,6 +11,8 @@ requires 'IPC::Run3';
 requires 'Test::Exception';
 recommends($^O =~ /MSWin/ ? 'Win32::ShellQuote' : 'String::ShellQuote' );
 
+repository 'https://github.com/bestpractical/test-script-run';
+
 auto_install;
 recursive_author_tests('xt/');
 
